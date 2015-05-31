@@ -152,10 +152,7 @@ function init() {
         return o instanceof THREE.Mesh;
     });
 
-    window.addEventListener('keyup', function (e) {
-        if (e.which == 13) changeModel()
-    });
-
+    document.getElementById('info').addEventListener('click', changeModel);
 
     // renderer
 
