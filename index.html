@@ -10,13 +10,18 @@
 <body>
 <div id="container"></div>
 <div id="info">
-    <a href="http://threejs.org" target="_blank">three.js</a> - RGB and LAB color spaces (press here to switch)
+    <a href="http://threejs.org" target="_blank">three.js</a> -
+    <button onclick="meshes.forEach(setRgbTarget)">RGB</button>,
+    <button onclick="meshes.forEach(setHslTarget)">HSL</button> and
+    <button onclick="meshes.forEach(setLabTarget)">LAB</button>
+    color spaces
 </div>
 
 <script src="http://threejs.org/build/three.min.js"></script>
 <script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
 <script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+<script src="dE00.js"></script>
 
 <script src="script.js"></script>
 

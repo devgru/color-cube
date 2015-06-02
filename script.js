@@ -8,9 +8,8 @@ var r = colorStep * 256 * 256;
 var g = colorStep * 256;
 var b = colorStep;
 
-var maxSpeed = 1;
+var maxSpeed = 3;
 var maxSpeedSq = Math.pow(maxSpeed, 2);
-var currentTarget = 'rgb';
 var meshes = null;
 
 var container, stats;
@@ -67,37 +66,43 @@ function numberToHex(i) {
     return '#' + pad.substring(0, pad.length - s.length) + s
 }
 
-function changeModel() {
-    if (currentTarget == 'rgb') {
-        currentTarget = 'lab';
-        meshes.forEach(setLabTarget);
-    } else {
-        currentTarget = 'rgb';
-        meshes.forEach(setRgbTarget);
-    }
-}
-
-function clone(o) {
-    return JSON.parse(JSON.stringify(o));
-}
-
-function setLabTarget(mesh) {
-    var lab = d3.lab(mesh.userData.color);
-    mesh.userData.targetReached = false;
-    mesh.userData.target = new THREE.Vector3(
+function calcLabTarget(rgb) {
+    var lab = d3.lab(rgb);
+    return new THREE.Vector3(
         (lab.b),
         -100 + 2 * lab.l,
         (lab.a)
     );
 }
 
+function setLabTarget(mesh) {
+    mesh.userData.targetReached = false;
+    mesh.userData.target = calcLabTarget(mesh.userData.color);
+}
+
+function calcHslTarget(rgb) {
+    var hsl = d3.hsl(rgb);
+    if (isNaN(hsl.s)) hsl.s = 0;
+    if (isNaN(hsl.h)) hsl.h = 0;
+    hsl.h -= 45;
+    var rad = Math.PI * hsl.h / 180;
+    return new THREE.Vector3(
+        hsl.s * 100,
+        -100 + 200 * hsl.l,
+        0
+    )
+        .applyAxisAngle(axisY, rad);
+}
+function setHslTarget(mesh) {
+    mesh.userData.targetReached = false;
+    mesh.userData.target = calcHslTarget(mesh.userData.color);
+}
+
 function rgbTransform(x) {
     return margin + cubeSpace * x / colorStep;
 }
-function setRgbTarget(mesh) {
-    var rgb = mesh.userData.color;
-    mesh.userData.targetReached = false;
-    mesh.userData.target = new THREE.Vector3(
+function calcRgbTarget(rgb) {
+    return new THREE.Vector3(
         rgbTransform(rgb.r),
         rgbTransform(rgb.g),
         rgbTransform(rgb.b)
@@ -106,6 +111,10 @@ function setRgbTarget(mesh) {
         .applyAxisAngle(axisZ, angleZ)
         .applyAxisAngle(axisY, angleY)
 
+}
+function setRgbTarget(mesh) {
+    mesh.userData.targetReached = false;
+    mesh.userData.target = calcRgbTarget(mesh.userData.color);
 }
 
 function setPosition(vector, values) {
@@ -151,8 +160,6 @@ function init() {
     meshes = scene.children.filter(function (o) {
         return o instanceof THREE.Mesh;
     });
-
-    document.getElementById('info').addEventListener('click', changeModel);
 
     // renderer
 
