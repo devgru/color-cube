@@ -8,8 +8,6 @@ var controls;
 var scene;
 var renderer;
 
-var animations = 0;
-
 init();
 
 function move(p, t) {
@@ -65,38 +63,18 @@ function init() {
 
   var currentPoint = 0;
   var points = generatePoints();
-  d3.shuffle(points);
   function rotate() {
+    return
     if (currentPoint < points.length) {
-      scene.add(points[currentPoint++]);
       controls.update();
 
       requestAnimationFrame(rotate);
     }
-    //controls.rotateLeft(Math.PI * 2 * 0.5 / 360);
   }
 
   scene = new THREE.Scene();
+  points.forEach(function (point) { scene.add(point); })
   rotate();
-
-
-  /*
-   var fgMaterial = new THREE.MeshBasicMaterial({shading: THREE.FlatShading});
-   var trelloRed = [ '#fbedeb',
-   '#f5d3ce',
-   '#efb3ab',
-   '#ec9488',
-   '#ef7564',
-   '#eb5a46',
-   '#cf513d',
-   '#b04632',
-   '#933b27',
-   '#6e2f1a' ];
-
-
-   trelloRed.forEach(function (rgb) {
-   pushPoint(rgb, fgMaterial);
-   });*/
 
   // renderer
 

@@ -1,5 +1,5 @@
-var cubeItems = 5 + 1;
-var cubeSpace = 7;
+var cubeItems = 15 + 1;
+var cubeSpace = 4;
 var cubeRatio = 2;
 var pointSize = cubeSpace / cubeRatio;
 var colorStep = 255 / (cubeItems - 1);
@@ -17,22 +17,19 @@ var angleZ = Math.atan(1 / Math.sqrt(2));
 var sphere = new THREE.SphereGeometry(pointSize);
 var bgMaterial = new THREE.MeshBasicMaterial({
   shading: THREE.FlatShading,
-  //transparent: true,
-  //opacity: 0.2,
+  transparent: true,
+  opacity: 0.1,
   color: '#ffffff'
 });
 
+var fgMaterial = new THREE.MeshBasicMaterial({
+  shading: THREE.FlatShading
+});
 
 function objectToArray(o) {
   return Object.keys(o).map(function (k) {
     return o[k];
   });
-}
-
-function formatPoint(p) {
-  return objectToArray(p).map(function (n) {
-    return n.toFixed();
-  }).join(', ');
 }
 
 function generatePoints() {
@@ -44,6 +41,12 @@ function generatePoints() {
       }
     }
   }
+
+  var fgColors = location.hash.split('/');
+
+  fgColors.forEach(function (rgb) {
+    result.push(createPoint(rgb, fgMaterial));
+  });
   return result;
 }
 
